@@ -122,6 +122,17 @@
       font-style: italic;
     }
 
+    .link-btn {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .link-btn:hover {
+      text-decoration: underline;
+    }
+
     .info-btn {
       background: none;
       border: none;
@@ -208,26 +219,25 @@
       color: #333;
     }
 
-    .info-detail {
+    .form-group {
       margin-bottom: 16px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #f0f0f0;
     }
 
-    .info-detail:last-child {
-      border-bottom: none;
-    }
-
-    .info-label {
+    .form-group label {
+      display: block;
       font-weight: 600;
       color: #666;
       font-size: 12px;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
-    .info-value {
-      color: #1f2937;
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
       font-size: 14px;
     }
 
@@ -255,43 +265,6 @@
       background: #dc2626;
     }
 
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 500;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .cancel-btn {
-      background: #d1d5db;
-      color: #333;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      flex: 1;
-    }
-
     .save-btn {
       background: #3b82f6;
       color: white;
@@ -305,6 +278,23 @@
 
     .save-btn:hover {
       background: #2563eb;
+    }
+
+    .cancel-btn {
+      background: #d1d5db;
+      color: #333;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .add-form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -324,16 +314,16 @@
           <tr>
             <th>Hunt</th>
             <th>Restaurant</th>
-            <th>Platform</th>
             <th>Last Check</th>
             <th>Latest Available</th>
+            <th>Maps</th>
             <th>Book</th>
             <th></th>
           </tr>
         </thead>
         <tbody id="table-body">
           <tr>
-            <td colspan="6" class="loading">
+            <td colspan="7" class="loading">
               <span class="spinner"></span>Loading...
             </td>
           </tr>
@@ -342,17 +332,52 @@
     </div>
   </div>
 
-  <!-- Info Modal -->
+  <!-- Info Modal (Editable) -->
   <div class="modal" id="infoModal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modalTitle">Restaurant Details</h2>
         <button class="close-btn" onclick="closeModal('infoModal')">&times;</button>
       </div>
-      <div id="modalBody"></div>
-      <div class="modal-actions">
-        <button class="delete-btn" onclick="deleteRestaurant()">Delete</button>
-      </div>
+      <form onsubmit="saveRestaurantEdits(event)">
+        <div class="form-group">
+          <label>Restaurant Name</label>
+          <input type="text" id="editName" required>
+        </div>
+        <div class="form-group">
+          <label>Platform</label>
+          <select id="editPlatform" required>
+            <option value="resy">Resy</option>
+            <option value="sevenrooms">Sevenrooms</option>
+            <option value="opentable">OpenTable</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Booking URL</label>
+          <input type="text" id="editBookingUrl" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Google Maps URL</label>
+          <input type="text" id="editMapsUrl" placeholder="https://maps.google.com/...">
+        </div>
+        <div class="form-group">
+          <label>Days in Advance</label>
+          <input type="number" id="editDays">
+        </div>
+        <div class="form-group">
+          <label>Opening Time (HH:MM)</label>
+          <input type="text" id="editTime" placeholder="09:00">
+        </div>
+        <div class="form-group">
+          <label>Cancellation Hours</label>
+          <input type="number" id="editCancellation" value="72">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" onclick="closeModal('infoModal')">Cancel</button>
+          <button type="submit" class="save-btn">Save</button>
+          <button type="button" class="delete-btn" onclick="deleteRestaurant()">Delete</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -378,6 +403,14 @@
           </select>
         </div>
         <div class="form-group">
+          <label>Booking URL</label>
+          <input type="text" id="newBookingUrl" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Google Maps URL</label>
+          <input type="text" id="newMapsUrl" placeholder="https://maps.google.com/...">
+        </div>
+        <div class="form-group">
           <label>Days in Advance</label>
           <input type="number" id="newDays">
         </div>
@@ -389,7 +422,7 @@
           <label>Cancellation Hours</label>
           <input type="number" id="newCancellation" value="72">
         </div>
-        <div class="form-actions">
+        <div class="add-form-actions">
           <button type="button" class="cancel-btn" onclick="closeModal('addModal')">Cancel</button>
           <button type="submit" class="save-btn">Add Restaurant</button>
         </div>
@@ -411,7 +444,7 @@
       } catch (error) {
         console.error('Error loading status:', error);
         document.getElementById('table-body').innerHTML =
-          '<tr><td colspan="6" style="color: red;">Error loading data.</td></tr>';
+          '<tr><td colspan="7" style="color: red;">Error loading data.</td></tr>';
       }
     }
 
@@ -430,10 +463,8 @@
         const availableText = latestAvailable ? latestAvailable : 'Not found';
         const availableClass = latestAvailable ? 'available-date' : 'available-date none';
 
-        const bookUrl = getReservationUrl(restaurant);
-        const bookLink = bookUrl && bookUrl !== '#'
-          ? `<a href="${bookUrl}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 500;">→</a>`
-          : '—';
+        const bookUrl = restaurant.booking_url || getDefaultBookingUrl(restaurant);
+        const mapsUrl = restaurant.maps_url || `https://www.google.com/maps/search/${encodeURIComponent(restaurant.name + ' NYC')}`;
 
         row.innerHTML = `
           <td>
@@ -444,10 +475,14 @@
             >
           </td>
           <td class="restaurant-name">${restaurant.name}</td>
-          <td>${restaurant.platform}</td>
           <td class="last-check">${lastCheckFormatted}</td>
           <td class="${availableClass}">${availableText}</td>
-          <td>${bookLink}</td>
+          <td>
+            <a href="${mapsUrl}" target="_blank" class="link-btn">📍</a>
+          </td>
+          <td>
+            ${bookUrl && bookUrl !== '#' ? `<a href="${bookUrl}" target="_blank" class="link-btn">→</a>` : '—'}
+          </td>
           <td>
             <button class="info-btn" onclick="openInfoModal('${restaurant.id}')">ℹ️</button>
           </td>
@@ -484,58 +519,7 @@
       }
     }
 
-    function openInfoModal(restaurantId) {
-      currentRestaurantId = restaurantId;
-      const restaurant = allRestaurants.find(r => r.id === restaurantId);
-      if (!restaurant) return;
-
-      document.getElementById('modalTitle').textContent = restaurant.name;
-
-      const body = document.getElementById('modalBody');
-      const minDays = restaurant.cancellation_hours ? (restaurant.cancellation_hours / 24) : 'N/A';
-
-      body.innerHTML = `
-        <div class="info-detail">
-          <div class="info-label">Platform</div>
-          <div class="info-value">${restaurant.platform}</div>
-        </div>
-        <div class="info-detail">
-          <div class="info-label">Opens</div>
-          <div class="info-value">${getOpensText(restaurant)}</div>
-        </div>
-        <div class="info-detail">
-          <div class="info-label">Cancellation Policy</div>
-          <div class="info-value">${restaurant.cancellation_hours ? minDays + ' days' : 'Non-refundable'}</div>
-        </div>
-        ${restaurant.notes ? `
-        <div class="info-detail">
-          <div class="info-label">Notes</div>
-          <div class="info-value">${restaurant.notes}</div>
-        </div>
-        ` : ''}
-        <div class="info-detail">
-          <div class="info-label">Automation Level</div>
-          <div class="info-value">${restaurant.automation_level || 'N/A'}</div>
-        </div>
-      `;
-
-      document.getElementById('infoModal').classList.add('active');
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
-    }
-
-    function getOpensText(restaurant) {
-      if (restaurant.opens_days_in_advance && restaurant.opens_time) {
-        return `${restaurant.opens_days_in_advance} days @ ${restaurant.opens_time} EST`;
-      } else if (restaurant.opens_pattern) {
-        return restaurant.opens_pattern;
-      }
-      return 'Variable';
-    }
-
-    function getReservationUrl(restaurant) {
+    function getDefaultBookingUrl(restaurant) {
       if (restaurant.platform === 'resy') {
         return `https://resy.com/cities/new-york-ny/venues/${restaurant.id}`;
       } else if (restaurant.platform === 'sevenrooms') {
@@ -544,6 +528,54 @@
         return `https://www.opentable.com/r/${restaurant.id}-new-york`;
       }
       return '#';
+    }
+
+    function openInfoModal(restaurantId) {
+      currentRestaurantId = restaurantId;
+      const restaurant = allRestaurants.find(r => r.id === restaurantId);
+      if (!restaurant) return;
+
+      document.getElementById('modalTitle').textContent = restaurant.name;
+      document.getElementById('editName').value = restaurant.name;
+      document.getElementById('editPlatform').value = restaurant.platform;
+      document.getElementById('editBookingUrl').value = restaurant.booking_url || getDefaultBookingUrl(restaurant);
+      document.getElementById('editMapsUrl').value = restaurant.maps_url || '';
+      document.getElementById('editDays').value = restaurant.opens_days_in_advance || '';
+      document.getElementById('editTime').value = restaurant.opens_time || '';
+      document.getElementById('editCancellation').value = restaurant.cancellation_hours || 72;
+
+      document.getElementById('infoModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    async function saveRestaurantEdits(event) {
+      event.preventDefault();
+
+      const updates = {
+        name: document.getElementById('editName').value,
+        platform: document.getElementById('editPlatform').value,
+        booking_url: document.getElementById('editBookingUrl').value,
+        maps_url: document.getElementById('editMapsUrl').value,
+        opens_days_in_advance: document.getElementById('editDays').value ? parseInt(document.getElementById('editDays').value) : null,
+        opens_time: document.getElementById('editTime').value || null,
+        cancellation_hours: parseInt(document.getElementById('editCancellation').value) || 72,
+      };
+
+      try {
+        await fetch(`${API_BASE}/restaurant/${currentRestaurantId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates),
+        });
+        closeModal('infoModal');
+        loadStatus();
+      } catch (error) {
+        console.error('Error saving restaurant:', error);
+        alert('Error saving restaurant');
+      }
     }
 
     async function deleteRestaurant() {
@@ -573,6 +605,8 @@
         id: document.getElementById('newName').value.toLowerCase().replace(/\s+/g, '-'),
         name: document.getElementById('newName').value,
         platform: document.getElementById('newPlatform').value,
+        booking_url: document.getElementById('newBookingUrl').value || null,
+        maps_url: document.getElementById('newMapsUrl').value || null,
         opens_days_in_advance: document.getElementById('newDays').value ? parseInt(document.getElementById('newDays').value) : null,
         opens_time: document.getElementById('newTime').value || null,
         cancellation_hours: parseInt(document.getElementById('newCancellation').value) || 72,

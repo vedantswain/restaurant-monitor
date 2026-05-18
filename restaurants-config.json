@@ -13,7 +13,9 @@
       "party_size": 2,
       "cancellation_hours": 72,
       "automation_level": "can_automate",
-      "notes": "15 min grace period, 90 min table limit"
+      "notes": "15 min grace period, 90 min table limit",
+      "booking_url": "https://resy.com/cities/new-york-ny/venues/semma",
+      "maps_url": "https://www.google.com/maps/search/Semma+restaurant+NYC"
     },
     {
       "id": "dhamaka",
@@ -25,7 +27,9 @@
       "party_size": 2,
       "cancellation_hours": 24,
       "automation_level": "can_automate",
-      "notes": "20% gratuity for parties of 5+"
+      "notes": "20% gratuity for parties of 5+",
+      "booking_url": "https://www.sevenrooms.com/explore/dhamakanyc",
+      "maps_url": "https://www.google.com/maps/search/Dhamaka+NYC+119+Delancey"
     },
     {
       "id": "kidilum",
@@ -37,7 +41,9 @@
       "party_size": 2,
       "cancellation_hours": 72,
       "automation_level": "can_automate",
-      "notes": "South Indian cuisine, Flatiron"
+      "notes": "South Indian cuisine, Flatiron",
+      "booking_url": "https://resy.com/cities/new-york-ny/venues/kidilum",
+      "maps_url": "https://www.google.com/maps/search/Kidilum+NYC+Flatiron"
     },
     {
       "id": "ambassador",
@@ -50,7 +56,9 @@
       "party_size": 2,
       "cancellation_hours": 72,
       "automation_level": "can_automate",
-      "notes": "$35/guest fee if cancelled <24hrs (not applicable with 72hr rule)"
+      "notes": "$35/guest fee if cancelled <24hrs (not applicable with 72hr rule)",
+      "booking_url": "https://resy.com/cities/new-york-ny/venues/ambassadors-clubhouse-new-york",
+      "maps_url": "https://www.google.com/maps/search/Ambassadors+Clubhouse+NYC+NoMad"
     },
     {
       "id": "fish-cheeks",
@@ -63,7 +71,9 @@
       "party_size": 2,
       "cancellation_hours": 72,
       "automation_level": "can_automate",
-      "notes": "Thai restaurant, NoHo"
+      "notes": "Thai restaurant, NoHo",
+      "booking_url": "https://resy.com/cities/new-york-ny/venues/fish-cheeks",
+      "maps_url": "https://www.google.com/maps/search/Fish+Cheeks+NYC+NoHo"
     },
     {
       "id": "hi-collar",
@@ -76,7 +86,9 @@
       "party_size": 2,
       "cancellation_hours": 72,
       "automation_level": "can_automate",
-      "notes": "Japanese, East Village"
+      "notes": "Japanese, East Village",
+      "booking_url": "https://resy.com/cities/new-york-ny/venues/hi-collar",
+      "maps_url": "https://www.google.com/maps/search/Hi-Collar+NYC+East+Village"
     },
     {
       "id": "joo-ok",
@@ -89,7 +101,9 @@
       "party_size": 2,
       "cancellation_hours": null,
       "automation_level": "notify_only",
-      "notes": "$200/guest non-refundable deposit - notify only, user decides"
+      "notes": "$200/guest non-refundable deposit - notify only, user decides",
+      "booking_url": "https://resy.com/cities/new-york-ny/venues/joo-ok",
+      "maps_url": "https://www.google.com/maps/search/Joo+Ok+NYC+Korean"
     },
     {
       "id": "the-gallery-odo",
@@ -102,7 +116,9 @@
       "party_size": 2,
       "cancellation_hours": 48,
       "automation_level": "can_automate",
-      "notes": "No fixed opening time, check continuously"
+      "notes": "No fixed opening time, check continuously",
+      "booking_url": "https://www.odogallery.nyc/",
+      "maps_url": "https://www.google.com/maps/search/THE+GALLERY+by+odo+NYC+17+West+20th"
     }
   ],
   "status_file": "reservation-status.json"

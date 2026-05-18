@@ -92,6 +92,22 @@ app.post('/api/restaurant', (req, res) => {
   res.json({ success: true, restaurant: newRestaurant });
 });
 
+app.put('/api/restaurant/:id', (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const restaurant = config.restaurants.find(r => r.id === id);
+  if (!restaurant) {
+    return res.status(404).json({ error: 'Restaurant not found' });
+  }
+
+  Object.assign(restaurant, updates);
+
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
+
+  res.json({ success: true, restaurant });
+});
+
 app.delete('/api/restaurant/:id', (req, res) => {
   const { id } = req.params;
 
