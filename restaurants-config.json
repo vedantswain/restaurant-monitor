@@ -1,0 +1,109 @@
+{
+  "email_to_sms": "+14703382482@tmomail.net",
+  "preferred_days": ["Thursday", "Friday", "Saturday"],
+  "default_cancellation_hours": 72,
+  "restaurants": [
+    {
+      "id": "semma",
+      "name": "Semma",
+      "platform": "resy",
+      "opens_days_in_advance": 15,
+      "opens_time": "09:00",
+      "opens_timezone": "EST",
+      "party_size": 2,
+      "cancellation_hours": 72,
+      "automation_level": "can_automate",
+      "notes": "15 min grace period, 90 min table limit"
+    },
+    {
+      "id": "dhamaka",
+      "name": "Dhamaka",
+      "platform": "sevenrooms",
+      "opens_days_in_advance": 7,
+      "opens_time": "09:00",
+      "opens_timezone": "EST",
+      "party_size": 2,
+      "cancellation_hours": 24,
+      "automation_level": "can_automate",
+      "notes": "20% gratuity for parties of 5+"
+    },
+    {
+      "id": "kidilum",
+      "name": "Kidilum",
+      "platform": "resy",
+      "opens_days_in_advance": 7,
+      "opens_time": "11:00",
+      "opens_timezone": "EST",
+      "party_size": 2,
+      "cancellation_hours": 72,
+      "automation_level": "can_automate",
+      "notes": "South Indian cuisine, Flatiron"
+    },
+    {
+      "id": "ambassador",
+      "name": "Ambassador (Ambassadors Clubhouse)",
+      "platform": "resy",
+      "opens_days_in_advance": null,
+      "opens_time": null,
+      "opens_timezone": "EST",
+      "opens_pattern": "1st and 15th of month",
+      "party_size": 2,
+      "cancellation_hours": 72,
+      "automation_level": "can_automate",
+      "notes": "$35/guest fee if cancelled <24hrs (not applicable with 72hr rule)"
+    },
+    {
+      "id": "fish-cheeks",
+      "name": "Fish-cheeks",
+      "platform": "resy",
+      "opens_days_in_advance": null,
+      "opens_time": null,
+      "opens_timezone": "EST",
+      "opens_pattern": "variable - check continuously",
+      "party_size": 2,
+      "cancellation_hours": 72,
+      "automation_level": "can_automate",
+      "notes": "Thai restaurant, NoHo"
+    },
+    {
+      "id": "hi-collar",
+      "name": "Hi-Collar",
+      "platform": "resy",
+      "opens_days_in_advance": null,
+      "opens_time": null,
+      "opens_timezone": "EST",
+      "opens_pattern": "variable - check continuously",
+      "party_size": 2,
+      "cancellation_hours": 72,
+      "automation_level": "can_automate",
+      "notes": "Japanese, East Village"
+    },
+    {
+      "id": "joo-ok",
+      "name": "Joo Ok",
+      "platform": "resy",
+      "opens_days_in_advance": null,
+      "opens_time": "12:00",
+      "opens_timezone": "EST",
+      "opens_pattern": "1st and 15th of month",
+      "party_size": 2,
+      "cancellation_hours": null,
+      "automation_level": "notify_only",
+      "notes": "$200/guest non-refundable deposit - notify only, user decides"
+    },
+    {
+      "id": "the-gallery-odo",
+      "name": "THE GALLERY by odo",
+      "platform": "opentable",
+      "opens_days_in_advance": null,
+      "opens_time": null,
+      "opens_timezone": "EST",
+      "opens_pattern": "variable - no fixed time",
+      "party_size": 2,
+      "cancellation_hours": 48,
+      "automation_level": "can_automate",
+      "notes": "No fixed opening time, check continuously"
+    }
+  ],
+  "status_file": "reservation-status.json"
+}
