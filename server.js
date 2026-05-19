@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cron = require('node-cron');
+const { checkResyAvailability, checkOpenTableAvailability, checkSevenroomsAvailability } = require('./scraper');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -150,9 +151,33 @@ const checkAvailability = async (restaurantIds) => {
       continue;
     }
 
-    // TODO: Implement actual scraping for each platform
-    console.log(`🔍 Checking ${restaurant.name} (${restaurant.platform})`);
-    console.log(`   → ${getResaurantUrl(restaurant)}`);
+    try {
+      let result = null;
+
+      if (restaurant.platform === 'resy') {
+        result = await checkResyAvailability(id, restaurant.name, restaurant.cancellation_hours);
+      } else if (restaurant.platform === 'opentable') {
+        result = await checkOpenTableAvailability(id, restaurant.name, restaurant.cancellation_hours);
+      } else if (restaurant.platform === 'sevenrooms') {
+        result = await checkSevenroomsAvailability(restaurant.name, restaurant.cancellation_hours);
+      }
+
+      if (result && result.available) {
+        const availableDate = result.date || result.time || 'Available';
+        status.latestAvailable[id] = availableDate;
+        status.lastChecked[id] = new Date().toISOString();
+
+        fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
+        console.log(`✓ FOUND: ${restaurant.name} → ${availableDate}`);
+      } else {
+        status.lastChecked[id] = new Date().toISOString();
+        fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
+      }
+    } catch (error) {
+      console.error(`Error checking ${restaurant.name}:`, error.message);
+      status.lastChecked[id] = new Date().toISOString();
+      fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
+    }
   }
 };
 
