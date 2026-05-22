@@ -330,6 +330,13 @@
         </tbody>
       </table>
     </div>
+
+    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <h2 style="font-size: 16px; margin-bottom: 15px;">Scraper Logs</h2>
+      <div id="logs-container" style="font-size: 13px; color: #666; max-height: 200px; overflow-y: auto;">
+        <p>Loading logs...</p>
+      </div>
+    </div>
   </div>
 
   <!-- Info Modal (Editable) -->
@@ -629,10 +636,60 @@
       }
     }
 
+    async function loadLogs() {
+      try {
+        const response = await fetch(`${API_BASE}/logs`);
+        const data = await response.json();
+
+        const container = document.getElementById('logs-container');
+
+        if (!data.lastRun) {
+          container.innerHTML = '<p style="color: #999;">No scraper runs yet</p>';
+          return;
+        }
+
+        const lastRun = data.lastRun;
+        const lastRunTime = new Date(lastRun.completedAt).toLocaleString();
+
+        let html = `<p><strong>Last run:</strong> ${lastRunTime}</p>`;
+        html += `<p><strong>Total runs:</strong> ${data.totalRuns}</p>`;
+
+        if (lastRun.results && lastRun.results.length > 0) {
+          html += '<p style="margin-top: 10px;"><strong>Latest check results:</strong></p>';
+          html += '<ul style="margin: 5px 0 0 20px; line-height: 1.8;">';
+
+          lastRun.results.forEach(r => {
+            let badge = '';
+            if (r.status === 'found') {
+              badge = `✓ Found: ${r.result}`;
+            } else if (r.status === 'no_availability') {
+              badge = '✗ No availability';
+            } else if (r.status === 'error') {
+              badge = `⚠️ Error: ${r.error}`;
+            } else {
+              badge = '⊘ Skipped';
+            }
+            html += `<li>${r.restaurant}: ${badge}</li>`;
+          });
+
+          html += '</ul>';
+        }
+
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading logs:', error);
+        document.getElementById('logs-container').innerHTML = '<p style="color: red;">Error loading logs</p>';
+      }
+    }
+
     // Load on page load
     loadStatus();
+    loadLogs();
     // Refresh every 30 seconds
-    setInterval(loadStatus, 30000);
+    setInterval(() => {
+      loadStatus();
+      loadLogs();
+    }, 30000);
 
     // Close modals on background click
     document.getElementById('infoModal').addEventListener('click', (e) => {

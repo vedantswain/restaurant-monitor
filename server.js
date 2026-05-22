@@ -9,9 +9,11 @@ const PORT = process.env.PORT || 3002;
 
 const CONFIG_PATH = path.join(__dirname, 'restaurants-config.json');
 const STATUS_PATH = path.join(__dirname, 'reservation-status.json');
+const LOGS_PATH = path.join(__dirname, 'scraper-logs.json');
 
 let config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
 let status = JSON.parse(fs.readFileSync(STATUS_PATH, 'utf8'));
+let logs = fs.existsSync(LOGS_PATH) ? JSON.parse(fs.readFileSync(LOGS_PATH, 'utf8')) : { runs: [] };
 
 // Middleware
 app.use(express.json());
@@ -26,6 +28,15 @@ app.get('/api/status', (req, res) => {
     latestAvailable: status.latestAvailable,
     restaurants: config.restaurants,
     lastUpdated: new Date().toISOString(),
+  });
+});
+
+app.get('/api/logs', (req, res) => {
+  const recentRuns = logs.runs.slice(-20); // Last 20 runs
+  res.json({
+    lastRun: logs.runs[logs.runs.length - 1] || null,
+    totalRuns: logs.runs.length,
+    recentRuns
   });
 });
 
@@ -135,19 +146,35 @@ app.get('/', (req, res) => {
 
 // Cron jobs for checking availability
 const checkAvailability = async (restaurantIds) => {
-  console.log(`[${new Date().toISOString()}] Checking availability for:`, restaurantIds);
+  const runStartTime = new Date().toISOString();
+  const runResults = [];
+
+  console.log(`[${runStartTime}] Checking availability for:`, restaurantIds);
 
   for (const id of restaurantIds) {
     const restaurant = config.restaurants.find(r => r.id === id);
     if (!restaurant) continue;
 
+    const checkResult = {
+      restaurant: restaurant.name,
+      id: id,
+      timestamp: runStartTime,
+      status: 'pending',
+      result: null,
+      error: null
+    };
+
     if (!status.hunting[id]) {
       console.log(`⊘ ${restaurant.name} - not hunting`);
+      checkResult.status = 'skipped';
+      runResults.push(checkResult);
       continue;
     }
 
     if (status.booked[id]) {
       console.log(`✓ ${restaurant.name} - already booked`);
+      checkResult.status = 'skipped';
+      runResults.push(checkResult);
       continue;
     }
 
@@ -166,19 +193,45 @@ const checkAvailability = async (restaurantIds) => {
         const availableDate = result.date || result.time || 'Available';
         status.latestAvailable[id] = availableDate;
         status.lastChecked[id] = new Date().toISOString();
+        checkResult.status = 'found';
+        checkResult.result = availableDate;
 
         fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
         console.log(`✓ FOUND: ${restaurant.name} → ${availableDate}`);
       } else {
         status.lastChecked[id] = new Date().toISOString();
+        checkResult.status = 'no_availability';
         fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
+        console.log(`✗ ${restaurant.name}: No availability`);
       }
     } catch (error) {
       console.error(`Error checking ${restaurant.name}:`, error.message);
       status.lastChecked[id] = new Date().toISOString();
+      checkResult.status = 'error';
+      checkResult.error = error.message;
       fs.writeFileSync(STATUS_PATH, JSON.stringify(status, null, 2));
     }
+
+    runResults.push(checkResult);
   }
+
+  // Log the entire run
+  logs.runs = logs.runs || [];
+  logs.runs.push({
+    timestamp: runStartTime,
+    duration: new Date() - new Date(runStartTime),
+    restaurants: restaurantIds,
+    results: runResults,
+    completedAt: new Date().toISOString()
+  });
+
+  // Keep only last 100 runs
+  if (logs.runs.length > 100) {
+    logs.runs = logs.runs.slice(-100);
+  }
+
+  fs.writeFileSync(LOGS_PATH, JSON.stringify(logs, null, 2));
+  console.log(`Check complete at ${new Date().toISOString()}`);
 };
 
 const getResaurantUrl = (restaurant) => {
