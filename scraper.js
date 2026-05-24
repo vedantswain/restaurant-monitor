@@ -6,10 +6,17 @@ async function checkResyAvailability(restaurantId, restaurantName, cancellationH
   let browser;
   try {
     console.log(`[${new Date().toISOString()}] Launching Puppeteer for ${restaurantName}`);
-    browser = await puppeteer.launch({
+    const puppeteerOptions = {
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    };
+
+    // Use system Chrome if available (for Render deployment)
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      puppeteerOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    browser = await puppeteer.launch(puppeteerOptions);
 
     const page = await browser.newPage();
     const url = `https://resy.com/cities/new-york-ny/venues/${restaurantId}`;
@@ -82,10 +89,16 @@ async function checkResyAvailability(restaurantId, restaurantName, cancellationH
 async function checkOpenTableAvailability(restaurantId, restaurantName, cancellationHours = 72) {
   let browser;
   try {
-    browser = await puppeteer.launch({
+    const puppeteerOptions = {
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    };
+
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      puppeteerOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    browser = await puppeteer.launch(puppeteerOptions);
 
     const page = await browser.newPage();
     await page.goto(`https://www.opentable.com/r/${restaurantId}-new-york`, {

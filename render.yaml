@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: restaurant-monitor
+    env: node
+    plan: free
+    buildCommand: >
+      apt-get update &&
+      apt-get install -y chromium-browser &&
+      npm install
+    startCommand: npm start
+    envVars:
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: /usr/bin/chromium-browser
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: "true"
